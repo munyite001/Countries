@@ -71,7 +71,6 @@ nav .switchTheme p {
 }
 
 .search .inputBox {
-  max-width: 500px;
   width: 100%;
 }
 
@@ -116,6 +115,10 @@ nav .switchTheme p {
     width: 90vw;
     flex-direction: row;
     justify-content: space-between;
+  }
+
+  .search .inputBox {
+    max-width: 350px;
   }
 
   .filterBox {
