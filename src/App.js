@@ -1,6 +1,6 @@
 import React from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMoon, faSun } from '@fortawesome/free-solid-svg-icons';
+import { faMoon, faSun, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 
 const themes = {
   light: {
@@ -42,7 +42,7 @@ export default function App()
 function Navbar(props)
 {
   // eslint-disable-next-line
-  const {darkTheme, setTheme} = props
+  const {theme, setTheme} = props
   function changeTheme()
   {
     setTheme((prevTheme) => prevTheme === "light" ? "dark" : "light")
@@ -51,11 +51,11 @@ function Navbar(props)
     <nav>
       <h2>Where in the World?</h2>
       <div className="switchTheme">
-        {darkTheme === "dark" && <FontAwesomeIcon icon={faMoon} onClick={changeTheme}/>}
-        {darkTheme === "light" && <FontAwesomeIcon icon={faSun} onClick={changeTheme}/>}
+        {theme === "dark" && <FontAwesomeIcon icon={faMoon} onClick={changeTheme}/>}
+        {theme === "light" && <FontAwesomeIcon icon={faSun} onClick={changeTheme}/>}
         <p>
-          {darkTheme === "light" && "Light Mode"}
-          {darkTheme === "dark" && "Dark Mode"}
+          {theme === "light" && "Light Mode"}
+          {theme === "dark" && "Dark Mode"}
         </p>
       </div>
     </nav>
@@ -72,8 +72,44 @@ function Home(props)
   return (
   <main style={props.styles}>
     <header style={headerStyles}>
-      <Navbar darkTheme={props.theme} setTheme={props.setTheme}/>
+      <Navbar theme={props.theme} setTheme={props.setTheme}/>
     </header>
+    <Search theme={props.theme}/>
   </main>
+  )
+}
+
+function Search(props)
+{
+  const searchBoxStyle = {
+    backgroundColor: themes[props.theme + 'Elements'].backgroundColor,
+    color: themes[props.theme + 'Elements'].color,
+  }
+  const continents = ['Africa', 'Antarctica', 'Asia', 'Europe', 'North America', 'Oceania', 'South America'];
+  return(
+    <div className="search">
+      <div className="inputBox">
+        <label htmlFor="searchQuery"></label>
+        <div className="input" style={searchBoxStyle}>
+          <FontAwesomeIcon icon={faMagnifyingGlass} size = 'xl'/>
+          <input 
+            type="text" 
+            id="searchQuery" 
+            placeholder="Search for a country"
+            style={searchBoxStyle}
+            />
+        </div>
+      </div>
+      <div className="filterBox">
+        <select name="continents" style={searchBoxStyle}>
+          <option selected value="" disabled>Filter by Region</option>
+          {
+            continents.map((continent) => {
+              return <option value={continent} style={searchBoxStyle}>{continent}</option>
+            })
+          }
+        </select>
+      </div>
+    </div>
   )
 }
