@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMoon, faSun, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 
@@ -26,6 +26,17 @@ export default function App()
   // eslint-disable-next-line
   const [showAllCountries, setShowAllCountries] = React.useState(true);
   const [theme, setTheme] = React.useState('light');
+  const url='https://restcountries.com/v3.1/all';
+  const [countries,setCountries] = React.useState([]);
+
+  const fetchInfo = () => {
+    return fetch(url)
+    .then((res) => res.json())
+    .then((data)=> setCountries(data))
+  }
+  useEffect(() => {
+    fetchInfo();
+  },[])
 
   const containerStyles = {
     backgroundColor: themes[theme].backgroundColor,
@@ -33,12 +44,16 @@ export default function App()
   }
   return (
     <div style={containerStyles}>
-      {showAllCountries && <Home theme={theme} setTheme={setTheme} styles={containerStyles}/>}
+      {showAllCountries && <Home theme={theme} setTheme={setTheme} styles={containerStyles} countries={countries}/>}
     </div>
   )
 }
 
-// COMPONENTS
+/*======================
+#       COMPONENTS
+=======================*/
+
+//  NAVBAR
 function Navbar(props)
 {
   // eslint-disable-next-line
@@ -62,30 +77,41 @@ function Navbar(props)
   )
 }
 
+//  HOMEPAGE TO DISPLAY ALL COUNTRIES
 function Home(props)
 {
+  const countries = props.countries;
   const headerStyles = {
     backgroundColor: themes[props.theme + 'Elements'].backgroundColor,
     color: themes[props.theme + 'Elements'].color,
     boxShadow: props.theme === "light" ? '0 3px 5px hsl(0, 0%, 52%)':''
   }
+  const [region, setRegion] = React.useState('All');
+
   return (
   <main style={props.styles}>
     <header style={headerStyles}>
       <Navbar theme={props.theme} setTheme={props.setTheme}/>
     </header>
-    <Search theme={props.theme}/>
+    <Search theme={props.theme} setRegion={setRegion}/>
+    <DisplayCountries countries={countries} region={region} theme={props.theme}/>
   </main>
   )
 }
 
+//  SEARCH
 function Search(props)
 {
   const searchBoxStyle = {
     backgroundColor: themes[props.theme + 'Elements'].backgroundColor,
     color: themes[props.theme + 'Elements'].color,
   }
-  const continents = ['Africa', 'Antarctica', 'Asia', 'Europe', 'North America', 'Oceania', 'South America'];
+  const continents = ['Africa', 'Antarctic', 'Asia', 'Europe', 'Americas', 'Oceania'];
+  function handleChange(event)
+  {
+    const continent = event.target.value;
+    props.setRegion(continent)
+  }
   return(
     <div className="search">
       <div className="inputBox">
@@ -101,7 +127,7 @@ function Search(props)
         </div>
       </div>
       <div className="filterBox">
-        <select name="continents" style={searchBoxStyle}>
+        <select name="continents" style={searchBoxStyle} onChange={handleChange}>
           <option selected value="" disabled>Filter by Region</option>
           {
             continents.map((continent) => {
@@ -112,4 +138,50 @@ function Search(props)
       </div>
     </div>
   )
+}
+
+
+//  DisplayAllCountries
+function DisplayCountries(props) {
+  const countryStyle = {
+    backgroundColor: themes[props.theme + 'Elements'].backgroundColor,
+    color: themes[props.theme + 'Elements'].color,
+  }
+
+  var countries = [];
+
+  if (props.region === "All")
+  {
+    countries = props.countries
+  }
+  else
+  {
+    countries = props.countries.filter((country) => {
+      return country.region === props.region;
+    })
+  }
+  //  Loading Screen
+  if (countries.length === 0) {
+    return <p>Loading...</p>;
+  }
+
+  return (
+    <section className="countries-grid">
+      {countries.map((country) => {
+        return (
+          <div className="country" style={countryStyle}>
+            <div className="flag">
+              <img src={country.flags.png} alt={country.flags.alt}/>
+            </div>
+            <div className="country-content">
+              <h2>{country.name.common}</h2>
+              <p>Population: {country.population}</p>
+              <p>Region: {country.region}</p>
+              <p>Capital: {country.capital}</p>
+            </div>
+          </div>
+        )
+      })}
+    </section>
+  );
 }

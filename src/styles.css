@@ -22,7 +22,7 @@
 
 body, main {
   width: 100vw;
-  height: 100vh;
+  height: auto;
 }
 
 header {
@@ -126,3 +126,36 @@ nav .switchTheme p {
     justify-content: flex-end;
   }
 }
+
+/* Countries */
+.countries-grid {
+  max-width: 90vw;
+  margin: 1rem auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto;
+  gap: 2rem;
+  grid-auto-flow: row;
+  border: 1px solid green;
+}
+
+.country {
+  width: 100%;
+  min-width: 290px;
+}
+
+.country .flag {
+  width: 100%;
+}
+
+.country .flag img {
+  width: 100%;
+}
+
+@media (min-width: 768px)
+{
+  .countries-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
