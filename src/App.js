@@ -84,17 +84,17 @@ function Home(props)
   const headerStyles = {
     backgroundColor: themes[props.theme + 'Elements'].backgroundColor,
     color: themes[props.theme + 'Elements'].color,
-    boxShadow: props.theme === "light" ? '0 3px 5px hsl(0, 0%, 52%)':''
+    boxShadow: props.theme === "light" ? '0 2px 3px hsl(0, 0%, 52%)':''
   }
   const [region, setRegion] = React.useState('All');
-
+  const [filteredCountry, setFilteredCountry] = React.useState('')
   return (
   <main style={props.styles}>
     <header style={headerStyles}>
       <Navbar theme={props.theme} setTheme={props.setTheme}/>
     </header>
-    <Search theme={props.theme} setRegion={setRegion}/>
-    <DisplayCountries countries={countries} region={region} theme={props.theme}/>
+    <Search theme={props.theme} setRegion={setRegion} setFilteredCountry={setFilteredCountry}/>
+    <DisplayCountries countries={countries} region={region} theme={props.theme} filteredCountry={filteredCountry}/>
   </main>
   )
 }
@@ -105,29 +105,35 @@ function Search(props)
   const searchBoxStyle = {
     backgroundColor: themes[props.theme + 'Elements'].backgroundColor,
     color: themes[props.theme + 'Elements'].color,
+    boxShadow: props.theme === "light" ? '0 0 1px 1px hsl(0, 0%, 70%)':''
   }
   const continents = ['Africa', 'Antarctic', 'Asia', 'Europe', 'Americas', 'Oceania'];
-  function handleChange(event)
+  function changeRegion(event)
   {
     const continent = event.target.value;
     props.setRegion(continent)
+  }
+  function filterCountry(event)
+  {
+    const country = event.target.value;
+    props.setFilteredCountry(country);
   }
   return(
     <div className="search">
       <div className="inputBox">
         <label htmlFor="searchQuery"></label>
         <div className="input" style={searchBoxStyle}>
-          <FontAwesomeIcon icon={faMagnifyingGlass} size = 'xl'/>
-          <input 
-            type="text" 
-            id="searchQuery" 
+          <FontAwesomeIcon icon={faMagnifyingGlass} size = 'xl' className="icon"/>
+          <input
+            type="text"
+            id="searchQuery"
             placeholder="Search for a country"
-            style={searchBoxStyle}
+            onChange={filterCountry}
             />
         </div>
       </div>
       <div className="filterBox">
-        <select name="continents" style={searchBoxStyle} onChange={handleChange}>
+        <select name="continents" style={searchBoxStyle} onChange={changeRegion}>
           <option selected value="" disabled>Filter by Region</option>
           {
             continents.map((continent) => {
@@ -146,6 +152,7 @@ function DisplayCountries(props) {
   const countryStyle = {
     backgroundColor: themes[props.theme + 'Elements'].backgroundColor,
     color: themes[props.theme + 'Elements'].color,
+    boxShadow: props.theme === "light" ? '0 0 1px 1px hsl(0, 0%, 70%)':''
   }
 
   var countries = [];
@@ -154,10 +161,17 @@ function DisplayCountries(props) {
   {
     countries = props.countries
   }
-  else
+  else if (props.region !== "All")
   {
     countries = props.countries.filter((country) => {
       return country.region === props.region;
+    })
+  }
+
+  if (props.filteredCountry !== null)
+  {
+    countries = props.countries.filter((country) => {
+      return country.name.common.toLowerCase().includes(props.filteredCountry.toLowerCase());
     })
   }
   //  Loading Screen
@@ -175,9 +189,9 @@ function DisplayCountries(props) {
             </div>
             <div className="country-content">
               <h2>{country.name.common}</h2>
-              <p>Population: {country.population}</p>
-              <p>Region: {country.region}</p>
-              <p>Capital: {country.capital}</p>
+              <p><strong>Population</strong>: {country.population.toLocaleString()}</p>
+              <p><strong>Region</strong>: {country.region}</p>
+              <p><strong>Capital</strong>: {country.capital}</p>
             </div>
           </div>
         )

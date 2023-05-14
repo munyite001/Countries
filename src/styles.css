@@ -77,16 +77,24 @@ nav .switchTheme p {
 .search .inputBox .input {
   width: 100%;
   height: 3rem;
-  padding: 0 1rem;
+  padding: 0 0.5rem;
   border-radius: 5;
-
+  display: flex;
+  align-items: center;
+  border-radius: 5px;
 }
+.search .inputBox .input .icon {
+  margin: 0;
+}
+
 
 .inputBox .input input {
   border: none;
   height: 100%;
-  margin: 0 1rem;
+  margin: 0 0.5rem;
   font-size: 1.2rem;
+  background-color: inherit;
+  color: inherit;
 }
 
 .inputBox .input input:focus {
@@ -103,10 +111,11 @@ nav .switchTheme p {
   width: 100%;
   max-width: 300px;
   font-size: 1rem;
-  padding: 0 1rem;
+  padding: 0 0.5rem;
   height: 3rem;
   border: none;
   margin: 1rem 0;
+  border-radius: 5px;
 }
 
 @media (min-width: 768px)
@@ -129,33 +138,39 @@ nav .switchTheme p {
 
 /* Countries */
 .countries-grid {
-  max-width: 90vw;
+  max-width: 90vw !important;
   margin: 1rem auto;
   display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: auto;
+  grid-template-columns: repeat(4, minmax(250px, 1fr));
+  grid-auto-columns: auto;
   gap: 2rem;
-  grid-auto-flow: row;
-  border: 1px solid green;
 }
 
 .country {
   width: 100%;
-  min-width: 290px;
+  border-radius: 5px;
+  display: grid;
+  grid-template-rows: 1fr 1fr;
 }
 
 .country .flag {
   width: 100%;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
 }
 
 .country .flag img {
   width: 100%;
+  height: 100%;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
 }
 
-@media (min-width: 768px)
-{
-  .countries-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
+.country .country-content {
+  width: 80%;
+  margin: 1rem auto;
 }
 
+.country-content h2 {
+  margin: 1rem 0;
+}
