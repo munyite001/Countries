@@ -168,10 +168,10 @@ function DisplayCountries(props) {
     })
   }
 
-  if (props.filteredCountry !== null)
+  if (props.filteredCountry !== '')
   {
     countries = props.countries.filter((country) => {
-      return country.name.common.toLowerCase().includes(props.filteredCountry.toLowerCase());
+      return country.name.common.toLowerCase().includes(props.filteredCountry);
     })
   }
   //  Loading Screen
