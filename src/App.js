@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMoon, faSun, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { faMoon, faSun, faMagnifyingGlass, faArrowLeftLong } from '@fortawesome/free-solid-svg-icons';
 
 const themes = {
   light: {
@@ -25,15 +25,17 @@ export default function App()
 {
   // eslint-disable-next-line
   const [showAllCountries, setShowAllCountries] = React.useState(true);
+  const [singleCountry, setSingleCountry] = React.useState({});
   const [theme, setTheme] = React.useState('light');
   const url='https://restcountries.com/v3.1/all';
   const [countries,setCountries] = React.useState([]);
 
-  const fetchInfo = () => {
-    return fetch(url)
-    .then((res) => res.json())
-    .then((data)=> setCountries(data))
+  const fetchInfo = async () => {
+      const res = await fetch(url);
+      const data = await res.json();
+      return setCountries(data);
   }
+  
   useEffect(() => {
     fetchInfo();
   },[])
@@ -44,7 +46,25 @@ export default function App()
   }
   return (
     <div style={containerStyles}>
-      {showAllCountries && <Home theme={theme} setTheme={setTheme} styles={containerStyles} countries={countries}/>}
+      {showAllCountries 
+      && 
+      <Home 
+        theme={theme} 
+        setTheme={setTheme} 
+        styles={containerStyles} 
+        countries={countries}
+        showAllCountries={setShowAllCountries}
+        setSingleCountry={setSingleCountry}
+      />}
+      {!showAllCountries
+      &&
+      <SingleState
+        setShowAllCountries={setShowAllCountries}
+        country={singleCountry}
+        theme={theme} 
+        setTheme={setTheme} 
+        styles={containerStyles}/>
+      }
     </div>
   )
 }
@@ -93,8 +113,19 @@ function Home(props)
     <header style={headerStyles}>
       <Navbar theme={props.theme} setTheme={props.setTheme}/>
     </header>
-    <Search theme={props.theme} setRegion={setRegion} setFilteredCountry={setFilteredCountry}/>
-    <DisplayCountries countries={countries} region={region} theme={props.theme} filteredCountry={filteredCountry}/>
+    <Search 
+      theme={props.theme} 
+      setRegion={setRegion} 
+      setFilteredCountry={setFilteredCountry}
+    />
+    <DisplayCountries 
+      countries={countries} 
+      region={region} 
+      theme={props.theme} 
+      filteredCountry={filteredCountry}
+      showAllCountries={props.showAllCountries}
+      setSingleCountry={props.setSingleCountry}
+    />
   </main>
   )
 }
@@ -137,7 +168,10 @@ function Search(props)
           <option selected value="" disabled>Filter by Region</option>
           {
             continents.map((continent) => {
-              return <option value={continent} style={searchBoxStyle}>{continent}</option>
+              return ( 
+              <option value={continent} key={continent} style={searchBoxStyle}>
+                {continent}
+              </option>)
             })
           }
         </select>
@@ -179,11 +213,17 @@ function DisplayCountries(props) {
     return <p>Loading...</p>;
   }
 
+  function handleClickCountry(country)
+  {
+    props.showAllCountries((prev) => !prev);
+    props.setSingleCountry(country);
+  }
+
   return (
     <section className="countries-grid">
       {countries.map((country) => {
         return (
-          <div className="country" style={countryStyle}>
+          <div onClick={()=>{handleClickCountry(country)}} className="country" style={countryStyle}>
             <div className="flag">
               <img src={country.flags.png} alt={country.flags.alt}/>
             </div>
@@ -198,4 +238,40 @@ function DisplayCountries(props) {
       })}
     </section>
   );
+}
+
+function SingleState(props)
+{
+  const elementStyles = {
+    backgroundColor: themes[props.theme + 'Elements'].backgroundColor,
+    color: themes[props.theme + 'Elements'].color,
+    boxShadow: props.theme === "light" ? '0 2px 3px hsl(0, 0%, 52%)':''
+  }
+
+  function handleClick()
+  {
+    props.setShowAllCountries(true);
+  }
+  return (
+    <main>
+      <header style={elementStyles}>
+        <Navbar theme={props.theme} setTheme={props.setTheme}/>
+      </header>
+      <div className="btn-container-sr">
+        <button style={elementStyles} onClick={handleClick}>
+          <FontAwesomeIcon icon={faArrowLeftLong} />
+          back
+          </button>
+      </div>
+      <div className="single-country-container">
+        <div className="flag-container">
+          <img src={props.country.flags.png} alt={props.country.flags.alt}/>
+        </div>
+        <div className="text-container">
+          <h2>{props.country.name.common}</h2>
+          <div className="grid-2"></div>
+        </div>
+      </div>
+    </main>
+  )
 }
