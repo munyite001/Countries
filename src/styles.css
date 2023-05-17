@@ -26,7 +26,7 @@ body, main {
 }
 
 main {
-  border: 5px solid green;
+  border: 1px solid transparent;
 }
 
 header {
