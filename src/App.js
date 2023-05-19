@@ -281,7 +281,7 @@ function SingleState(props)
               <p>
                 Native Name: 
                 <span>
-                  {Object.keys(props.country.name.nativeName)[0].common}
+                  {props.country.name.nativeName[Object.keys(props.country.name.nativeName)[0]].common}
                 </span>
               </p>
               <p>
