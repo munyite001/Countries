@@ -59,6 +59,7 @@ export default function App()
       {!showAllCountries
       &&
       <SingleState
+        countries={countries}
         setShowAllCountries={setShowAllCountries}
         country={singleCountry}
         theme={theme} 
@@ -248,6 +249,12 @@ function SingleState(props)
     boxShadow: props.theme === "light" ? '0 2px 3px hsl(0, 0%, 52%)':''
   }
 
+  const tagStyle = {
+    backgroundColor: themes[props.theme + 'Elements'].backgroundColor,
+    color: themes[props.theme + 'Elements'].color,
+    boxShadow: props.theme === "light" ? '0 0 3px hsl(0, 0%, 52%)':''
+  }
+
   function handleClick()
   {
     props.setShowAllCountries(true);
@@ -269,7 +276,85 @@ function SingleState(props)
         </div>
         <div className="text-container">
           <h2>{props.country.name.common}</h2>
-          <div className="grid-2"></div>
+          <div className="grid-2">
+            <div>
+              <p>
+                Native Name: 
+                <span>
+                  {Object.keys(props.country.name.nativeName)[0].common}
+                </span>
+              </p>
+              <p>
+                Population:
+                <span>
+                  {props.country.population.toLocaleString()}
+                </span>
+              </p>
+              <p>
+                Region:
+                <span>
+                  {props.country.region}
+                </span> 
+              </p>
+              <p>
+                Sub Region:
+                <span>
+                  {props.country.subregion}
+                </span>
+              </p>
+              <p>
+                Capital:
+                <span>
+                  {props.country.capital[0]}
+                </span> 
+              </p>
+            </div>
+            <div>
+              <p>
+                Top Level Domain:
+                <span>
+                  {props.country.tld[0]}
+                </span> 
+              </p>
+              <p>
+                Currencies:
+                <span>
+                  {Object.keys(props.country.currencies)[0]}
+                </span> 
+              </p>
+              <p>
+                Region:
+                <span>
+                  {props.country.region}
+                </span> 
+              </p>
+              <p>
+                Sub Region:
+                <span>
+                  {props.country.subregion}
+                </span> 
+              </p>
+              <p>
+                Capital:
+                <span>
+                  {props.country.capital[0]}
+                </span> 
+              </p>
+            </div>
+          </div>
+          <div className="borders">
+            <p>Border Countries: </p>
+            <div className="border-country-tags">
+              {props.country.borders && props.countries
+                .filter((cont) => props.country.borders.includes(cont.fifa))
+                .map((bor) => (
+                <div style={tagStyle}>
+                  {bor.name.common}
+                </div>
+              ))}
+              {!props.country.borders && "Unknown"}
+            </div>
+          </div>
         </div>
       </div>
     </main>
