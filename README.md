@@ -9,6 +9,9 @@ This project is a React application that consumes the Rest Countries API to gene
 - Filter countries by region.
 - Toggle between light and dark themes.
 
+
+[Live Url](https://world-countries-rest.netlify.app/)
+
 ## Installation
 
 1. Clone the repository:
